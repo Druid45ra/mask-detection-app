@@ -16,26 +16,7 @@ class MaskDetector:
     def detect_mask(self, image):
         processed_image = self.preprocess_image(image)
         prediction = self.model.predict(processed_image)
-        if prediction[0][0] > 0.5:
+        if prediction[0][0] > 0.3:
             return {'mask': False}
         else:
             return {'mask': True}
-
-    def detect_mask_in_video(self, video_source=0):
-        cap = cv2.VideoCapture(video_source)
-
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            label = self.detect_mask(frame)
-            cv2.putText(frame, str(label), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
-            cv2.imshow('Mask Detection', frame)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
